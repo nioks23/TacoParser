@@ -12,8 +12,10 @@ namespace LoggingKata
 
         static void Main(string[] args)
         {
+            
             // TODO:  Find the two Taco Bells that are the furthest from one another.
             // HINT:  You'll need two nested forloops ---------------------------
+          
 
             logger.LogInfo("Log initialized");
 
@@ -25,9 +27,10 @@ namespace LoggingKata
 
             // Create a new instance of your TacoParser class
             var parser = new TacoParser();
-
+            ITrackable tacoBell1 = new TacoBell();
+            ITrackable tacoBell2 = new TacoBell();
             // Grab an IEnumerable of locations using the Select command: var locations = lines.Select(parser.Parse);
-            var locations = lines.Select(parser.Parse).ToArray();
+            var locations = lines.Select(line => parser.Parse(line)).ToArray();
 
             // DON'T FORGET TO LOG YOUR STEPS
 
@@ -52,8 +55,37 @@ namespace LoggingKata
 
             // Once you've looped through everything, you've found the two Taco Bells farthest away from each other.
 
-
             
+            double distance = 0;
+
+            for (int i = 0; i < locations.Length; i++)
+            {
+
+                var locationA = locations[i];
+                var coordinateA = new GeoCoordinate();
+                coordinateA.Latitude = locationA.Location.Latitude;
+                coordinateA.Longitude = locationA.Location.Longitude;
+
+                for (int j = 0; j < locations.Length; j++)
+                {
+                    var locationB = locations[j];
+                    var coordinateB = new GeoCoordinate(locationB.Location.Latitude, locationB.Location.Latitude);
+                    
+                   
+
+                    if (coordinateA.GetDistanceTo(coordinateB) > distance)
+                    {
+                        distance = coordinateA.GetDistanceTo(coordinateB);
+                        tacoBell1 = locationA;
+                        tacoBell2 = locationB;
+                    }
+
+                }
+
+
+            }
+
+            logger.LogInfo($"{tacoBell1.Name} and {tacoBell2.Name} are the furthest from each other");
         }
     }
 }
