@@ -17,20 +17,15 @@ namespace LoggingKata
             // HINT:  You'll need two nested forloops ---------------------------
           
 
-            logger.LogInfo("Log initialized");
 
             // use File.ReadAllLines(path) to grab all the lines from your csv file
             // Log and error if you get 0 lines and a warning if you get 1 line
-            var lines = File.ReadAllLines(csvPath);
-
-            logger.LogInfo($"Lines: {lines[0]}");
+            
 
             // Create a new instance of your TacoParser class
-            var parser = new TacoParser();
-            ITrackable tacoBell1 = new TacoBell();
-            ITrackable tacoBell2 = new TacoBell();
+           
             // Grab an IEnumerable of locations using the Select command: var locations = lines.Select(parser.Parse);
-            var locations = lines.Select(line => parser.Parse(line)).ToArray();
+            
 
             // DON'T FORGET TO LOG YOUR STEPS
 
@@ -55,29 +50,42 @@ namespace LoggingKata
 
             // Once you've looped through everything, you've found the two Taco Bells farthest away from each other.
 
-            
+            logger.LogInfo("Log initialized");
+
+            var lines = File.ReadAllLines(csvPath);
+
+            logger.LogInfo($"Lines: {lines[0]}");
+
+            var parser = new TacoParser();
+
+            ITrackable tacoBell1 = new TacoBell();
+            ITrackable tacoBell2 = new TacoBell();
             double distance = 0;
+
+            var locations = lines.Select(line => parser.Parse(line)).ToArray();
+
+           
 
             for (int i = 0; i < locations.Length; i++)
             {
 
-                var locationA = locations[i];
-                var coordinateA = new GeoCoordinate();
-                coordinateA.Latitude = locationA.Location.Latitude;
-                coordinateA.Longitude = locationA.Location.Longitude;
+                var locA = locations[i];
+                var corA = new GeoCoordinate();
+                corA.Latitude = locA.Location.Latitude;
+                corA.Longitude = locA.Location.Longitude;
 
                 for (int j = 0; j < locations.Length; j++)
                 {
-                    var locationB = locations[j];
-                    var coordinateB = new GeoCoordinate(locationB.Location.Latitude, locationB.Location.Latitude);
+                    var locB = locations[j];
+                    var corB = new GeoCoordinate(locB.Location.Latitude, locB.Location.Latitude);
                     
                    
 
-                    if (coordinateA.GetDistanceTo(coordinateB) > distance)
+                    if (corA.GetDistanceTo(corB) > distance)
                     {
-                        distance = coordinateA.GetDistanceTo(coordinateB);
-                        tacoBell1 = locationA;
-                        tacoBell2 = locationB;
+                        distance = corA.GetDistanceTo(corB);
+                        tacoBell1 = locA;
+                        tacoBell2 = locB;
                     }
 
                 }
